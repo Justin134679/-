@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暴飲暴食警訊 | 健康危機解析</title>
+    <!-- 引入字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入動畫庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- 引入AOS庫 -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        :root {
+            --danger: #e11d48;
+            --danger-light: #fb7185;
+            --danger-dark: #be123c;
+            --warning: #f97316;
+            --warning-light: #fdba74;
+            --warning-dark: #c2410c;
+            --dark: #27272a;
+            --dark-light: #52525b;
+            --gray: #71717a;
+            --light: #ffffff;
+            --light-gray: #f4f4f5;
+            --bg-light: #fafafa;
+            --border-light: #e4e4e7;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        h3 {
+            font-size: 1.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: #1f2937;
+            font-weight: 450;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        
+        .text-danger {
+            color: var(--danger);
+        }
+        
+        .text-warning {
+            color: var(--warning-dark);
+        }
+        
+        .highlight {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: var(--danger-light);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        /* 閃爍動畫 */
+        @keyframes pulse-danger {
+            0% {
+                box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(225, 29, 72, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(225, 29, 72, 0);
+            }
+        }
+        
+        .pulse {
+            animation: pulse-danger 2s infinite;
+        }
+        
+        /* 警示三角形 */
+        .warning-triangle {
+            width: 80px;
+            height: 70px;
+            position: relative;
+            background-color: var(--warning);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            margin: 0 auto 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .warning-triangle::after {
+            content: '!';
+            position: absolute;
+            bottom: 15px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        /* 頂部區域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--bg-light), var(--light));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent 60%, rgba(225, 29, 72, 0.05) 100%);
+            top: -50%;
+            left: -50%;
+            animation: rotate 60s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: var(--danger);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-cta:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-3px);
+        }
+        
+        .hero-cta:nth-child(2) {
+            background-color: transparent; 
+            border: 2px solid var(--danger);
+            color: var(--danger-dark);
+            font-weight: 700;
+        }
+        
+        .hero-cta:nth-child(2):hover {
+            background-color: rgba(225, 29, 72, 0.1);
+            color: var(--danger);
+        }
+        
+        .heart-monitor {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid var(--danger-light);
+            margin-top: 3rem;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(225, 29, 72, 0.1);
+        }
+        
+        .heart-line {
+            display: flex;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .ecg-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 15s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        /* 症狀區域 */
+        .symptoms {
+            background-color: var(--light-gray);
+            position: relative;
+        }
+        
+        .symptoms::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(225, 29, 72, 0.03) 20px,
+                rgba(225, 29, 72, 0.03) 40px
+            );
+        }
+        
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .symptom-card {
+            background-color: var(--light);
+            border-left: 4px solid var(--danger);
+            padding: 2rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .symptom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .symptom-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .symptom-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+        
+        /* 風險區域 */
+        .risks {
+            background-color: var(--bg-light);
+            position: relative;
+        }
+        
+        .risks::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--danger-light) 0%, transparent 70%);
+            opacity: 0.1;
+        }
+        
+        .chart-container {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 450px;
+        }
+        
+        .risk-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .risk-indicator {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--light);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid var(--danger);
+        }
+        
+        .risk-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .risk-label {
+            font-size: 0.9rem;
+            color: var(--dark-light);
+        }
+        
+        /* 解決方案區域 */
+        .solutions {
+            background: linear-gradient(to bottom, var(--light-gray), var(--light));
+        }
+        
+        .solution-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .solution-step {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .solution-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .solution-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--danger), var(--warning));
+        }
+        
+        .step-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 見證區域 */
+        .testimonials {
+            background-color: var(--bg-light);
+            position: relative;
+        }
+        
+        .testimonial-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .testimonial-card {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 5rem;
+            color: var(--warning-light);
+            opacity: 0.2;
+            line-height: 1;
+        }
+        
+        .testimonial-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4a4a4a;
+            margin-right: 1rem;
+            overflow: hidden;
+        }
+        
+        .author-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-info {
+            line-height: 1.3;
+        }
+        
+        .author-name {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .author-title {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* CTA區域 */
+        .cta {
+            background: linear-gradient(135deg, var(--warning), var(--danger));
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .cta h2, .cta p {
+            color: white;
+        }
+        
+        .cta h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background-color: white;
+            color: var(--danger);
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 聯絡表單區域 */
+        #contact {
+            background-color: var(--light);
+        }
+        
+        .contact-form {
+            max-width: 600px; 
+            margin: 2rem auto; 
+            background: var(--light); 
+            padding: 2rem; 
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+        }
+        
+        .contact-form input, .contact-form textarea {
+            width: 100%; 
+            padding: 0.75rem; 
+            border-radius: 5px; 
+            border: 1px solid var(--border-light); 
+            background: var(--light); 
+            color: var(--dark);
+        }
+        
+        .contact-form label {
+            display: block; 
+            margin-bottom: 0.5rem; 
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .contact-form button {
+            background-color: var(--danger); 
+            color: white; 
+            padding: 0.75rem 2rem; 
+            border: none; 
+            border-radius: 5px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        
+        .contact-form button:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--danger-light);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2);
+        }
+        
+        /* 底部區域 */
+        .footer {
+            background-color: var(--light-gray);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .footer p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-content {
+                text-align: center;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .heart-monitor {
+                margin-top: 2rem;
+            }
+            
+            .risk-value {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .risk-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+        
+        .risk-circle svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .circle-bg {
+            fill: none;
+            stroke: #eee;
+            stroke-width: 3.8;
+        }
+        
+        .circle {
+            fill: none;
+            stroke-width: 3.8;
+            stroke: var(--danger);
+            stroke-linecap: round;
+            animation: progress 1s ease-out forwards;
+        }
+        
+        .percentage {
+            fill: var(--danger);
+            font-size: 0.5em;
+            text-anchor: middle;
+            font-weight: 700;
+        }
+        
+        @keyframes progress {
+            0% {
+                stroke-dasharray: 0 100;
+            }
+        }
+        
+        /* 為每個風險指標設置不同顏色 */
+        .risk-indicator:nth-child(1) .circle {
+            stroke: var(--danger);
+        }
+        
+        .risk-indicator:nth-child(2) .circle {
+            stroke: var(--danger-dark);
+        }
+        
+        .risk-indicator:nth-child(3) .circle {
+            stroke: var(--warning);
+        }
+        
+        .risk-indicator:nth-child(4) .circle {
+            stroke: var(--warning-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 頂部區域 -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="warning-triangle pulse"></div>
+            <h1>暴飲暴食： <span class="text-danger">健康危機</span>警報</h1>
+            <p class="animate__animated animate__fadeIn">你的身體正在向你發出警訊。每一次的暴飲暴食不只是體重問題，更是一連串健康風險的開始。了解你的身體正面臨的危機，掌握改變的關鍵。</p>
+            <a href="#risks" class="hero-cta pulse">查看健康風險</a>
+            <a href="#solutions" class="hero-cta">了解解決方案</a>
+            
+            <div class="heart-monitor">
+                <h3>你的身體健康指數正在下降...</h3>
+                <div class="heart-line">
+                    <svg width="100%" height="100" viewBox="0 0 1000 100">
+                        <path class="ecg-line" d="M0,50 Q50,30 100,50 T200,50 T300,50 T350,50 L370,50 L380,20 L390,80 L400,50 L410,50 T500,50 T600,50 T700,50 T800,50 T900,50 T1000,50" fill="none" stroke="var(--danger)" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 症狀與特徵區域 -->
+    <section class="section symptoms" id="symptoms">
+        <div class="container">
+            <h2 data-aos="fade-up">暴飲暴食的<span class="highlight">危險信號</span></h2>
+            <p data-aos="fade-up" data-aos-delay="100">以下症狀是你身體向你發出的警告，請認真對待這些信號。</p>
+            
+            <div class="symptoms-grid">
+                <div class="symptom-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="symptom-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                            <path d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5h-15a1.5 1.5 0 0 1-1.5-1.5v-8.25m16.5 0a1.5 1.5 0 0 0-1.5-1.5h-13.5a1.5 1.5 0 0 0-1.5 1.5m16.5 0v-1.5a1.5 1.5 0 0 0-1.5-1.5h-13.5a1.5 1.5 0 0 0-1.5 1.5v1.5m4.5-4.5v1.5m7.5-1.5v1.5"></path>
+                        </svg>
+                    </div>
+                    <h3>失控進食</h3>
+                    <p>一旦開始進食就難以停止，常常吃到感到不適才結束。這種行為模式在壓力大或情緒波動時更為明顯。</p>
+                    <p class="text-danger">危險指數: 極高</p>
+                </div>
+                
+                <div class="symptom-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="symptom-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                            <path d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3>情緒崩潰循環</h3>
+                    <p>進食後感到強烈的內疚、羞恥和自責，但下次情緒低落時又會重複相同的行為，形成惡性循環。</p>
+                    <p class="text-danger">危險指數: 高</p>
+                </div>
+                
+                <div class="symptom-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="symptom-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                            <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path>
+                        </svg>
+                    </div>
+                    <h3>能量波動</h3>
+                    <p>大量食物攝取後會導致血糖急劇升高然後迅速下降，造成疲勞、注意力不集中和情緒起伏不定。</p>
+                    <p class="text-danger">危險指數: 中高</p>
+                </div>
+                
+                <div class="symptom-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="symptom-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                            <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"></path>
+                        </svg>
+                    </div>
+                    <h3>健康惡化</h3>
+                    <p>長期暴飲暴食不僅增加體重，還會引發消化問題、心臟負擔加重、血壓升高等一系列健康問題。</p>
+                    <p class="text-warning">危險指數: 極高</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 風險數據區域 -->
+    <section class="section risks" id="risks">
+        <div class="container">
+            <h2 data-aos="fade-up">暴飲暴食的<span class="text-danger">致命風險</span></h2>
+            <p data-aos="fade-up" data-aos-delay="100">科學研究顯示，暴飲暴食型肥胖與多種慢性疾病密切相關。以下數據反映了相比一般人群的風險增加比例。</p>
+            
+            <div class="chart-container" data-aos="fade-up" data-aos-delay="150">
+                <canvas id="healthRiskChart"></canvas>
+            </div>
+            
+            <div class="risk-indicators">
+                <div class="risk-indicator" data-aos="fade-up" data-aos-delay="200">
+                    <div class="risk-circle" data-value="85">
+                        <svg viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <text x="18" y="20.35" class="percentage">85%</text>
+                        </svg>
+                    </div>
+                    <div class="risk-label">2型糖尿病風險增加</div>
+                </div>
+                
+                <div class="risk-indicator" data-aos="fade-up" data-aos-delay="250">
+                    <div class="risk-circle" data-value="72">
+                        <svg viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle" stroke-dasharray="72, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <text x="18" y="20.35" class="percentage">72%</text>
+                        </svg>
+                    </div>
+                    <div class="risk-label">心血管疾病風險增加</div>
+                </div>
+                
+                <div class="risk-indicator" data-aos="fade-up" data-aos-delay="300">
+                    <div class="risk-circle" data-value="68">
+                        <svg viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle" stroke-dasharray="68, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <text x="18" y="20.35" class="percentage">68%</text>
+                        </svg>
+                    </div>
+                    <div class="risk-label">高血壓風險增加</div>
+                </div>
+                
+                <div class="risk-indicator" data-aos="fade-up" data-aos-delay="350">
+                    <div class="risk-circle" data-value="65">
+                        <svg viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle" stroke-dasharray="65, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <text x="18" y="20.35" class="percentage">65%</text>
+                        </svg>
+                    </div>
+                    <div class="risk-label">脂肪肝風險增加</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 解決方案區域 -->
+    <section class="section solutions" id="solutions">
+        <div class="container">
+            <h2 data-aos="fade-up">突破<span class="highlight">暴飲暴食</span>循環</h2>
+            <p data-aos="fade-up" data-aos-delay="100">改變是可能的。通過科學方法和專業支持，你可以打破暴飲暴食的惡性循環，重獲健康與自信。</p>
+            
+            <div class="solution-steps">
+                <div class="solution-step" data-aos="fade-up" data-aos-delay="150">
+                    <span class="step-number">01</span>
+                    <h3>情緒意識培養</h3>
+                    <p>學習識別進食衝動背後的情緒觸發因素，建立情緒日記，記錄進食與情緒的關聯性。</p>
+                    <p>通過專業心理輔導，掌握有效的情緒管理技巧，不再用食物來麻痺情緒。</p>
+                </div>
+                
+                <div class="solution-step" data-aos="fade-up" data-aos-delay="200">
+                    <span class="step-number">02</span>
+                    <h3>建立規律飲食計劃</h3>
+                    <p>制定科學的營養攝入計劃，確保三餐定時定量，避免過度飢餓導致的失控進食。</p>
+                    <p>合理安排蛋白質、複合碳水和健康脂肪的比例，保持血糖穩定。</p>
+                </div>
+                
+                <div class="solution-step" data-aos="fade-up" data-aos-delay="250">
+                    <span class="step-number">03</span>
+                    <h3>壓力管理與替代策略</h3>
+                    <p>學習健康的壓力應對機制，如冥想、瑜伽、深呼吸等技巧，降低壓力激素水平。</p>
+                    <p>建立食物以外的情緒發洩管道，如運動、繪畫、寫日記或與朋友交流。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 見證區域 -->
+    <section class="section testimonials">
+        <div class="container">
+            <h2 data-aos="fade-up">成功<span class="highlight">突破</span>案例</h2>
+            <p data-aos="fade-up" data-aos-delay="100">聽聽那些已經成功克服暴飲暴食問題的人怎麼說。</p>
+            
+            <div class="testimonial-cards">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="testimonial-text">
+                        <p>「我曾經在壓力大時無法控制進食，一次可以吃掉整盒餅乾。通過專業的飲食計劃和情緒管理訓練，現在我已經能夠意識到自己的情緒觸發點，並用更健康的方式應對。」</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-image">
+                            <img src="https://picsum.photos/50/50" alt="李小姐照片">
+                        </div>
+                        <div class="author-info">
+                            <div class="author-name">李小姐</div>
+                            <div class="author-title">32歲，行銷專員</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-text">
+                        <p>「我的體重一直反覆上升下降，每次減肥成功後又會因為情緒問題暴飲暴食。專業的營養師和心理諮商幫助我找到了問題根源，現在我不再追求極端減肥，而是維持健康的生活方式。」</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-image">
+                            <img src="https://picsum.photos/50/51" alt="張先生照片">
+                        </div>
+                        <div class="author-info">
+                            <div class="author-name">張先生</div>
+                            <div class="author-title">45歲，工程師</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="testimonial-text">
+                        <p>「工作壓力讓我晚上常常暴飲暴食，健康檢查顯示我的血糖和膽固醇都超標。參加專業的健康計劃三個月後，我不只減重10公斤，更重要的是學會了如何在不用食物的情況下處理壓力。」</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-image">
+                            <img src="https://picsum.photos/51/50" alt="王小姐照片">
+                        </div>
+                        <div class="author-info">
+                            <div class="author-name">王小姐</div>
+                            <div class="author-title">38歲，專案經理</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 行動呼籲區域 -->
+    <section class="cta">
+        <div class="container">
+            <div class="warning-triangle"></div>
+            <h2 data-aos="fade-up">別讓暴飲暴食繼續危害你的健康</h2>
+            <p data-aos="fade-up" data-aos-delay="100">現在就採取行動，讓專業團隊幫助你擺脫暴飲暴食的惡性循環。</p>
+            <p data-aos="fade-up" data-aos-delay="150">我們提供專業的心理諮詢、個人化營養計劃和持續的支持系統，幫助你重拾健康。</p>
+            <a href="#contact" class="cta-button pulse" data-aos="fade-up" data-aos-delay="200">立即預約免費諮詢</a>
+        </div>
+    </section>
+    
+    <!-- 聯絡表單區域 -->
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 data-aos="fade-up">聯絡<span class="highlight">我們</span></h2>
+            <p data-aos="fade-up" data-aos-delay="100">填寫以下表單，我們的專業團隊將在24小時內與您聯繫。</p>
+            
+            <form action="#" method="POST" class="contact-form" data-aos="fade-up" data-aos-delay="150">
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="email">電子郵件</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="phone">電話</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="message">您的問題或需求</label>
+                    <textarea id="message" name="message" rows="4"></textarea>
+                </div>
+                
+                <button type="submit">提交表單</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- 頁腳區域 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 健康生活計劃. 版權所有.</p>
+            <p>本網站提供的資訊僅供參考，不構成醫療建議。如有健康問題，請諮詢專業醫師。</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // 初始化AOS動畫庫
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease',
+                once: true
+            });
+            
+            // 健康風險比較圖
+            const healthRiskCtx = document.getElementById('healthRiskChart').getContext('2d');
+            const healthRiskChart = new Chart(healthRiskCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['心血管疾病', '高血壓', '第2型糖尿病', '脂肪肝', '睡眠呼吸中止症', '憂鬱症'],
+                    datasets: [{
+                        label: '暴飲暴食型肥胖者風險',
+                        data: [78, 65, 85, 70, 60, 55],
+                        backgroundColor: 'rgba(225, 29, 72, 0.85)',
+                        borderColor: 'rgba(225, 29, 72, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: '一般人群風險',
+                        data: [35, 25, 30, 20, 15, 25],
+                        backgroundColor: 'rgba(249, 115, 22, 0.6)',
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#111827',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: '健康風險比較 (%)',
+                            color: '#111827',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#111827',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#111827',
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 20
+                        }
+                    },
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                }
+            });
+            
+            // 平滑滾動
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // 警告燈效果
+            const pulseElements = document.querySelectorAll('.pulse');
+            pulseElements.forEach(el => {
+                setInterval(() => {
+                    el.style.animation = 'none';
+                    setTimeout(() => {
+                        el.style.animation = 'pulse-danger 2s infinite';
+                    }, 10);
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>
