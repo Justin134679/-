@@ -17,6 +17,8 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- 引入Font Awesome圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- 引入Supabase JS客戶端 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --danger: #e11d48;
@@ -579,7 +581,7 @@
             left: 0;
             width: 100%;
             height: 15px;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAsNjRMNjAsNzQuN0MxMjAsODUsMjQwLDEwNywzNjAsMTEyQzQ4MCwxMTcsNjAwLDEwNyw3MjAsOTZDODQwLDg1LDk2MCw3NSwxMDgwLDEwMS4zQzEyMDAsMTI4LDEzMjAsMTkyLDEzODAsMjI0TDE0NDAsMjU2TDE0NDAsMEwxMzgwLDBDMTMyMCwwLDEyMDAsMCwxMDgwLDBDOTYwLDAsODQwLDAsNzIwLDBDNjAwLDAsNDgwLDMsMzYwLDNDMjQwLDMsMTIwLDMsNjAsM0wwLDNaIj48L3BhdGg+PC9zdmc+');
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAsNjRMNjAsNzQuN0MxMjAsODUsMjQwLDEwNywzNjAsMTEyQzQ4MCwxMTcsNjAwLDEwNyw3MjAsOTZDODQwLDg1LDk2MCw3NSwxMDgwLDEwMS4zQzEyMDAsMTI4LDEzMjAsMTkyLDEzODAsMjI0TDE0NDAsMjU2TDE0NDAsMEwxMzgwLDBDMTMyMCwwLDEyMDAsMCwxMDgwLDBDOTYwLDAsODQwLDAsNjAwLDBDNjAwLDAsNDgwLDMsMzYwLDNDMjQwLDMsMTIwLDMsNjAsM0wwLDNaIj48L3BhdGg+PC9zdmc+');
             background-size: 1440px 320px;
             transform: rotate(180deg);
         }
@@ -1021,6 +1023,35 @@
         .risk-indicator:nth-child(4) .circle {
             stroke: var(--warning-dark);
         }
+        
+        /* 表單狀態樣式 */
+        .form-status {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .form-status.info {
+            display: block;
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #bbdefb;
+        }
+        
+        .form-status.success {
+            display: block;
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .form-status.error {
+            display: block;
+            background-color: #ffebee;
+            color: #b71c1c;
+            border: 1px solid #ffcdd2;
+        }
     </style>
 </head>
 
@@ -1309,7 +1340,7 @@
             <h2 data-aos="fade-up">聯絡<span class="highlight">我們</span></h2>
             <p data-aos="fade-up" data-aos-delay="100">填寫以下表單，我們的專業團隊將在24小時內與您聯繫。</p>
             
-            <form action="#" method="POST" class="contact-form" data-aos="fade-up" data-aos-delay="150">
+            <form id="consultation-form" class="contact-form" data-aos="fade-up" data-aos-delay="150">
                 <div style="margin-bottom: 1.5rem;">
                     <label for="name">姓名</label>
                     <input type="text" id="name" name="name" required>
@@ -1330,7 +1361,9 @@
                     <textarea id="message" name="message" rows="4"></textarea>
                 </div>
                 
-                <button type="submit">提交表單</button>
+                <div id="form-status" class="form-status"></div>
+                
+                <button type="submit" id="submit-btn">提交表單</button>
             </form>
         </div>
     </section>
@@ -1456,6 +1489,60 @@
                         el.style.animation = 'pulse-danger 2s infinite';
                     }, 10);
                 }, 4000);
+            });
+
+            // 初始化Supabase客戶端
+            const supabaseUrl = 'https://vznhhyqkwdzlkvnbofij.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bmhoeXFrd2R6bGt2bmJvZmlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyMzY4MjgsImV4cCI6MjA2MDgxMjgyOH0.3LZ8Xgfkgwl5Qg2SZVjUdlC8Ts6kwk-diaKajhnZDa0';
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+            // 表單提交處理
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('consultation-form');
+                const submitBtn = document.getElementById('submit-btn');
+                const formStatus = document.getElementById('form-status');
+                
+                if(form) {
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        // 顯示加載狀態
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '提交中...';
+                        formStatus.className = 'form-status info';
+                        formStatus.textContent = '正在提交您的諮詢請求...';
+                        
+                        // 獲取表單數據
+                        const formData = {
+                            name: document.getElementById('name').value,
+                            email: document.getElementById('email').value,
+                            phone: document.getElementById('phone').value,
+                            message: document.getElementById('message').value,
+                            status: 'new'
+                        };
+                        
+                        try {
+                            // 向Supabase提交數據
+                            const { data, error } = await supabaseClient
+                                .from('consultations')
+                                .insert([formData]);
+                            
+                            if(error) throw error;
+                            
+                            // 成功提交
+                            formStatus.className = 'form-status success';
+                            formStatus.textContent = '感謝您的諮詢請求！我們的專業團隊將在24小時內與您聯繫。';
+                            form.reset();
+                        } catch(error) {
+                            console.error('Error submitting form:', error);
+                            formStatus.className = 'form-status error';
+                            formStatus.textContent = '提交失敗，請稍後再試或直接聯繫我們。錯誤: ' + error.message;
+                        } finally {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '提交表單';
+                        }
+                    });
+                }
             });
         });
     </script>
