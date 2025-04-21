@@ -15,6 +15,8 @@
     <!-- 引入AOS庫 -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- 引入Font Awesome圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
             --danger: #e11d48;
@@ -126,50 +128,73 @@
             animation: pulse-danger 2s infinite;
         }
         
-        /* 警示三角形 */
-        .warning-triangle {
-            width: 80px;
-            height: 70px;
+        /* 升級版警示三角形區域 */
+        .warning-area {
+            text-align: center;
+            margin-bottom: 3rem;
             position: relative;
-            background-color: var(--warning);
+        }
+        
+        .warning-triangle {
+            width: 120px;
+            height: 110px;
+            position: relative;
+            background: linear-gradient(145deg, var(--warning), var(--warning-dark));
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            margin: 0 auto 2rem;
+            margin: 0 auto 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+            animation: pulse-light 3s infinite;
         }
         
         .warning-triangle::after {
             content: '!';
             position: absolute;
-            bottom: 15px;
-            font-size: 2rem;
+            bottom: 20px;
+            font-size: 2.5rem;
             font-weight: bold;
             color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         
-        /* 頂部區域 */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(to bottom, var(--bg-light), var(--light));
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
+        .warning-triangle::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, transparent 60%, rgba(225, 29, 72, 0.05) 100%);
-            top: -50%;
-            left: -50%;
-            animation: rotate 60s linear infinite;
+            width: 140px;
+            height: 130px;
+            background: transparent;
+            border: 3px dashed var(--warning-light);
+            opacity: 0.5;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            top: -10px;
+            left: -10px;
+            animation: rotate-slow 20s linear infinite;
         }
         
-        @keyframes rotate {
+        .warning-title {
+            font-size: 1.2rem;
+            color: var(--warning-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        
+        @keyframes pulse-light {
+            0% {
+                box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+            }
+            50% {
+                box-shadow: 0 15px 30px rgba(249, 115, 22, 0.5);
+            }
+            100% {
+                box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+            }
+        }
+        
+        @keyframes rotate-slow {
             from {
                 transform: rotate(0deg);
             }
@@ -178,23 +203,44 @@
             }
         }
         
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hero h1 {
+        /* 標題樣式優化 */
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
             margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--dark), var(--danger));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
         }
         
-        .hero p {
-            font-size: 1.25rem;
-            max-width: 700px;
-            margin-bottom: 2rem;
+        .hero-title .highlight {
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--danger), var(--warning));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        .hero-title .highlight::after {
+            background: none;
+        }
+        
+        /* 更新按鈕樣式 */
+        .hero-buttons {
+            display: flex;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
         
         .hero-cta {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             padding: 1rem 2rem;
             background-color: var(--danger);
             color: white;
@@ -202,26 +248,35 @@
             font-weight: 700;
             border-radius: 50px;
             transition: all 0.3s ease;
-            margin-right: 1rem;
+            margin-right: 1.5rem;
+            margin-bottom: 1rem;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(225, 29, 72, 0.3);
         }
         
         .hero-cta:hover {
             background-color: var(--danger-dark);
             transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.4);
         }
         
         .hero-cta:nth-child(2) {
-            background-color: transparent; 
+            background-color: transparent;
             border: 2px solid var(--danger);
-            color: var(--danger-dark);
-            font-weight: 700;
+            color: var(--danger);
+            box-shadow: 0 5px 15px rgba(225, 29, 72, 0.1);
         }
         
         .hero-cta:nth-child(2):hover {
-            background-color: rgba(225, 29, 72, 0.1);
-            color: var(--danger);
+            background-color: rgba(225, 29, 72, 0.05);
+            color: var(--danger-dark);
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.2);
+        }
+        
+        .hero-cta i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
         }
         
         .heart-monitor {
@@ -487,36 +542,337 @@
             color: var(--gray);
         }
         
-        /* CTA區域 */
+        /* 重新設計的CTA區域 - 豐富版本 */
         .cta {
-            background: linear-gradient(135deg, var(--warning), var(--danger));
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0, #fd79a8);
             padding: 5rem 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .cta h2, .cta p {
+        .cta::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNCIgY3g9IjIwIiBjeT0iMjAiIHI9IjIiLz48L3N2Zz4=');
+            opacity: 0.15;
+        }
+        
+        .cta::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        
+        .cta .wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQwIDMyMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAsNjRMNjAsNzQuN0MxMjAsODUsMjQwLDEwNywzNjAsMTEyQzQ4MCwxMTcsNjAwLDEwNyw3MjAsOTZDODQwLDg1LDk2MCw3NSwxMDgwLDEwMS4zQzEyMDAsMTI4LDEzMjAsMTkyLDEzODAsMjI0TDE0NDAsMjU2TDE0NDAsMEwxMzgwLDBDMTMyMCwwLDEyMDAsMCwxMDgwLDBDOTYwLDAsODQwLDAsNzIwLDBDNjAwLDAsNDgwLDMsMzYwLDNDMjQwLDMsMTIwLDMsNjAsM0wwLDNaIj48L3BhdGg+PC9zdmc+');
+            background-size: 1440px 320px;
+            transform: rotate(180deg);
+        }
+        
+        .cta .container {
+            position: relative;
+            z-index: 5;
+        }
+        
+        .cta-top {
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-top::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 8s infinite;
+        }
+        
+        @keyframes shine {
+            0% {
+                left: -100%;
+                top: -100%;
+            }
+            20%, 100% {
+                left: 100%;
+                top: 100%;
+            }
+        }
+        
+        .cta-icon {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--warning-light), var(--danger-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.2);
+            position: relative;
+        }
+        
+        .cta-icon i {
+            font-size: 3.5rem;
             color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .cta-icon::after {
+            content: '';
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border: 2px dashed rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
         
         .cta h2 {
             margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .cta h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--danger-light), var(--warning));
+            border-radius: 3px;
+        }
+        
+        .cta p {
+            color: #444;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 1.5rem auto;
+            line-height: 1.7;
+        }
+        
+        .cta-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .cta-feature {
+            flex: 0 0 300px;
+            padding: 2rem;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cta-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--danger-light), var(--warning));
+            z-index: -1;
+        }
+        
+        .cta-feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .cta-feature-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--warning-light), var(--danger-light));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+        }
+        
+        .cta-feature-icon i {
+            font-size: 1.8rem;
+            color: white;
+            transform: rotate(-45deg);
+        }
+        
+        .cta-feature h3 {
+            color: #333;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        
+        .cta-feature p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        .cta-button-wrapper {
+            margin-top: 2.5rem;
+            position: relative;
         }
         
         .cta-button {
             display: inline-block;
-            padding: 1rem 3rem;
-            background-color: white;
-            color: var(--danger);
+            padding: 1.2rem 3.5rem;
+            background: linear-gradient(135deg, var(--danger), var(--warning));
+            color: white;
             font-weight: 700;
+            font-size: 1.1rem;
             text-decoration: none;
             border-radius: 50px;
             transition: all 0.3s ease;
-            margin-top: 2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
         }
         
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.25);
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .cta-button i {
+            margin-right: 0.8rem;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .shape {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 10s linear infinite;
+        }
+        
+        .shape:nth-child(1) {
+            width: 50px;
+            height: 50px;
+            top: 10%;
+            left: 10%;
+            animation-duration: 15s;
+        }
+        
+        .shape:nth-child(2) {
+            width: 70px;
+            height: 70px;
+            top: 20%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .shape:nth-child(3) {
+            width: 40px;
+            height: 40px;
+            bottom: 20%;
+            left: 20%;
+            animation-duration: 20s;
+            animation-delay: 5s;
+        }
+        
+        .shape:nth-child(4) {
+            width: 60px;
+            height: 60px;
+            bottom: 15%;
+            right: 10%;
+            animation-duration: 18s;
+            animation-delay: 8s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0.6;
+            }
         }
         
         /* 聯絡表單區域 */
@@ -672,11 +1028,18 @@
     <!-- 頂部區域 -->
     <section class="hero">
         <div class="container hero-content">
-            <div class="warning-triangle pulse"></div>
-            <h1>暴飲暴食： <span class="text-danger">健康危機</span>警報</h1>
+            <div class="warning-area">
+                <div class="warning-triangle pulse"></div>
+                <div class="warning-title">健康警示</div>
+            </div>
+            
+            <h1 class="hero-title">暴飲暴食：<span class="highlight">健康危機</span>警報</h1>
             <p class="animate__animated animate__fadeIn">你的身體正在向你發出警訊。每一次的暴飲暴食不只是體重問題，更是一連串健康風險的開始。了解你的身體正面臨的危機，掌握改變的關鍵。</p>
-            <a href="#risks" class="hero-cta pulse">查看健康風險</a>
-            <a href="#solutions" class="hero-cta">了解解決方案</a>
+            
+            <div class="hero-buttons">
+                <a href="#risks" class="hero-cta pulse"><i class="fas fa-exclamation-circle"></i>查看健康風險</a>
+                <a href="#solutions" class="hero-cta"><i class="fas fa-lightbulb"></i>了解解決方案</a>
+            </div>
             
             <div class="heart-monitor">
                 <h3>你的身體健康指數正在下降...</h3>
@@ -886,14 +1249,57 @@
         </div>
     </section>
     
-    <!-- 行動呼籲區域 -->
+    <!-- 全新設計的CTA區域 -->
     <section class="cta">
+        <div class="wave"></div>
+        
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        
         <div class="container">
-            <div class="warning-triangle"></div>
-            <h2 data-aos="fade-up">別讓暴飲暴食繼續危害你的健康</h2>
-            <p data-aos="fade-up" data-aos-delay="100">現在就採取行動，讓專業團隊幫助你擺脫暴飲暴食的惡性循環。</p>
-            <p data-aos="fade-up" data-aos-delay="150">我們提供專業的心理諮詢、個人化營養計劃和持續的支持系統，幫助你重拾健康。</p>
-            <a href="#contact" class="cta-button pulse" data-aos="fade-up" data-aos-delay="200">立即預約免費諮詢</a>
+            <div class="cta-top">
+                <div class="cta-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h2 data-aos="fade-up">從今天開始，邁向健康生活</h2>
+                <p data-aos="fade-up" data-aos-delay="100">我們相信每個人都能建立健康的飲食習慣，重新找回對生活的熱愛與控制力。</p>
+            </div>
+            
+            <div class="cta-features">
+                <div class="cta-feature" data-aos="fade-up" data-aos-delay="150">
+                    <div class="cta-feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>心理情緒諮詢</h3>
+                    <p>專業心理師引導您探索情緒與飲食的關聯，建立健康的情緒宣洩管道，不再依賴食物來舒緩壓力與負面情緒。</p>
+                </div>
+                
+                <div class="cta-feature" data-aos="fade-up" data-aos-delay="200">
+                    <div class="cta-feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>個人營養方案</h3>
+                    <p>營養師為您量身定制平衡的飲食計劃，讓您在滿足味蕾的同時獲取均衡營養，遠離飢餓感引發的暴飲暴食。</p>
+                </div>
+                
+                <div class="cta-feature" data-aos="fade-up" data-aos-delay="250">
+                    <div class="cta-feature-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>持續陪伴支持</h3>
+                    <p>我們的團隊將全程陪伴您，提供持續性的鼓勵與專業支持，幫助您克服每一個挑戰，直到健康飲食成為您的生活習慣。</p>
+                </div>
+            </div>
+            
+            <div class="cta-button-wrapper" data-aos="fade-up" data-aos-delay="300">
+                <a href="#contact" class="cta-button">
+                    <i class="fas fa-paper-plane"></i>免費諮詢預約
+                </a>
+            </div>
         </div>
     </section>
     
